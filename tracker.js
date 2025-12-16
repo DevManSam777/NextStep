@@ -2,6 +2,7 @@ let sessions = [];
 let weeklyChart = null;
 let monthlyChart = null;
 const API_URL = '/api';
+let displayedSessionCount = 10; // Start by showing 10 sessions
 
 // Authentication functions
 function getAuthToken() {
@@ -162,6 +163,9 @@ async function addSession() {
         const day = String(today.getDate()).padStart(2, '0');
         document.getElementById('date').value = `${year}-${month}-${day}`;
 
+        // Reset displayed count to 10
+        displayedSessionCount = 10;
+
         updateDisplay();
     } catch (error) {
         console.error('Error adding session:', error);
@@ -187,6 +191,9 @@ async function deleteSession(id) {
             headers: getAuthHeaders()
         });
         sessions = await sessionsResponse.json();
+
+        // Reset displayed count to 10
+        displayedSessionCount = 10;
 
         updateDisplay();
     } catch (error) {
@@ -234,6 +241,7 @@ function updateStats() {
     // This month
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    monthStart.setHours(0, 0, 0, 0); // Reset to midnight
     const monthSessions = sessions.filter(s => parseLocalDate(s.date) >= monthStart);
     const monthTotal = monthSessions.reduce((sum, s) => sum + s.distance, 0);
 
@@ -248,17 +256,22 @@ function updateStats() {
 function updateTable() {
     const tbody = document.getElementById('tableBody');
     const emptyState = document.getElementById('emptyState');
+    const loadMoreContainer = document.getElementById('loadMoreContainer');
 
     tbody.innerHTML = '';
 
     if (sessions.length === 0) {
         emptyState.style.display = 'block';
+        loadMoreContainer.style.display = 'none';
         return;
     }
 
     emptyState.style.display = 'none';
 
-    sessions.forEach(session => {
+    // Show only the first displayedSessionCount sessions
+    const sessionsToShow = sessions.slice(0, displayedSessionCount);
+
+    sessionsToShow.forEach(session => {
         const speed = (session.distance / session.duration * 60).toFixed(1);
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -270,6 +283,18 @@ function updateTable() {
         `;
         tbody.appendChild(row);
     });
+
+    // Show/hide Load More button
+    if (sessions.length > displayedSessionCount) {
+        loadMoreContainer.style.display = 'block';
+    } else {
+        loadMoreContainer.style.display = 'none';
+    }
+}
+
+function loadMoreSessions() {
+    displayedSessionCount += 10;
+    updateTable();
 }
 
 function updateCharts() {
@@ -431,9 +456,11 @@ function updateMonthlyChart() {
 
 function getWeekStart(date) {
     const d = new Date(date);
+    d.setHours(0, 0, 0, 0); // Reset to midnight
     const day = d.getDay();
     const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-    return new Date(d.setDate(diff));
+    d.setDate(diff);
+    return d;
 }
 
 // Initialize on load
