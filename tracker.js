@@ -192,9 +192,7 @@ async function deleteSession(id) {
         });
         sessions = await sessionsResponse.json();
 
-        // Reset displayed count to 10
-        displayedSessionCount = 10;
-
+        // Keep displayed count as is (preserve scroll position)
         updateDisplay();
     } catch (error) {
         console.error('Error deleting session:', error);
