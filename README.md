@@ -1,6 +1,6 @@
 # NextStep
 
-A workout tracker for logging and viewing running sessions.
+Track your runs with purpose. NextStep is a lightweight, fast running workout tracker that helps you log distance, monitor your speed, build streaks, and visualize your progress over time.
 
 ![NextStep](./assets/treadmill.gif)
 
