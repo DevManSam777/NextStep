@@ -1,8 +1,8 @@
-# Treadmill Tracker
+# NextStep
 
-A workout tracker for logging and viewing treadmill sessions.
+A workout tracker for logging and viewing running sessions.
 
-![Treadmill Tracker](./assets/treadmill.gif)
+![NextStep](./assets/treadmill.gif)
 
 ## Tech Stack
 

@@ -158,7 +158,7 @@ app.get('/', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Treadmill tracker server running at http://localhost:${PORT}`);
+  console.log(`NextStep server running at http://localhost:${PORT}`);
 });
 
 // Handle graceful shutdown
